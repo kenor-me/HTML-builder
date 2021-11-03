@@ -9,10 +9,20 @@ const fsPromises = fs.promises;
 fsPromises.mkdir(pathCopyDir).then(function () {
   console.log('Directory created successfully');
 }).catch(function () {
-  console.log('failed to create directory');
+  // console.log('failed to create directory');
 });
 
 function getCurrentFilenames() {
+  fs.readdir(pathCopyDir, (err, files) => {
+    if(files) {
+      files.forEach(file => {
+        fs.unlink(`${pathCopyDir}/${file}`, err => {
+          if (err) throw err;
+        });
+      });
+    }
+  });
+
   fs.readdir(pathDirectory, (err, files) => {
     files.forEach(file => {
       fs.copyFile(`${pathDirectory}/${file}`, `${pathCopyDir}/${file}`, (err) => {
