@@ -21,7 +21,6 @@ fs.copyFile(pathHTML, bundleHTML, (err) => {
   if (err) {
     console.log('Error Found:', err);
   } else {
-
     fs.readdir(pathComponents, (err, files) => {
       if (err) throw err;
 
@@ -29,16 +28,18 @@ fs.copyFile(pathHTML, bundleHTML, (err) => {
         if (err) throw err;
         else {
           files.forEach(file => {
+            const type = path.extname(file);
+            const nameFile = path.basename(file, type);
+
             fs.readFile(`${pathComponents}/${file}`, 'utf-8', (err, dataType) => {
-              if (err) throw err;
-
-              const type = path.extname(file);
-              const nameFile = path.basename(file, type);
-
-              data = data.replace(`{{${nameFile}}}`, dataType);
-              fs.writeFile(bundleHTML, data, 'utf-8', (err) => {
-                if (err) throw err;
-              });
+              if (err) {
+                throw err;
+              } else {
+                data = data.replace(`{{${nameFile}}}`, dataType);
+                fs.writeFile(bundleHTML, data, 'utf-8', (err) => {
+                  if (err) throw err;
+                });
+              }
             });
           });
         }
